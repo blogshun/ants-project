@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+    [@sql  data="list" tables="ls_post" fields="*" conditions="#order=log_ID asc&limit=3" debug=true]
+    [#list list as u]
+    <li>${u.log_Title}</li>
+    ````
+    <li>${u.log_PostTime}</li>
+    [/#list]
+    [/@sql]
+    ~~~~~~~~~~~~~~~~~~
+</ul>
+</body>
+</html>

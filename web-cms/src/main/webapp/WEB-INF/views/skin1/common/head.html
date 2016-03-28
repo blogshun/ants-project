@@ -1,0 +1,11 @@
+<ul>
+    [@category  list="condes"]
+    [#list list as u]
+    <li><a href="${ctx}/category?type=${u.id}">${u.id}</a></li>
+    ````
+    <li>${u.name}</li>
+    <li>${u.description}</li>
+    [/#list]
+    [/@category]
+    ~~~~~~~~~~~~~~~~~~
+</ul>

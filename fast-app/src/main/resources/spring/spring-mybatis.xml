@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--引用数据源-->
+    <import resource="classpath:spring/spring-data-source.xml"/>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:config/mybatis-config.xml"></property>
+        <property name="dataSource" ref="dataSource"/>
+        <!--
+        <property name="configLocation" value="classpath:config/mybatis-config.xml"/>-->
+        <!-- 自动扫描 Entity 目录, 省掉 Configuration.xml 里的手工配置
+        <property name="typeAliasesPackage" value="com.ants.ssm.pc.entity"/>-->
+        <!-- 自动扫描 Mapper 文件, 借口命名与 *Mapper.xml 一致! -->
+        <property name="mapperLocations" value="classpath:com/ants/project/fast/app/mybatis/mapper/*Mapper.xml"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.ants.project.fast.app"/>
+        <property name="annotationClass" value="com.ants.project.core.annotation.MyBatisMapper" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+
+    <bean id="dataSourceProxy" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+        <property name="targetDataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- spring 事物管理 -->
+    <bean id="mybatis_transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSourceProxy"/>
+    </bean>
+
+    <!-- 默认拦截器事务配置 -->
+    <bean id="mybatis_transactionInterceptor"
+          class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="mybatis_transactionManager" />
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+</beans>

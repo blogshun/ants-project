@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+    <context:property-placeholder location="classpath:config/resources.properties" />
+
+    <!-- 除去controller 其他都进行扫描注解 因为controll要被spirng-mvc扫描 -->
+    <context:component-scan base-package="com.ants.project"
+                            name-generator="com.ants.project.core.cover.AnnotationGenerator">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 开启AOP监听 只对当前配置文件有效 -->
+    <aop:aspectj-autoproxy/>
+
+
+    <!--  myBatis 框架 begin -->
+    <import resource="classpath:spring/spring-mybatis.xml"/>
+
+    <!--  hibernate 框架 begin -->
+    <import resource="classpath:spring/spring-hibernate.xml"/>
+
+
+    <!-- 事务拦截记录时间-->
+    <bean id="methodTimeAdvice" class="com.ants.project.core.interceptor.MethodTimeAdvice" />
+
+
+    <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <property name="beanNames">
+            <list>
+                <value>*Service</value>
+            </list>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>mybatis_transactionInterceptor</value>
+                <value>hibernate_transactionInterceptor</value>
+                <value>methodTimeAdvice</value>
+            </list>
+        </property>
+    </bean>
+
+</beans>

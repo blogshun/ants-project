@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--引用数据源-->
+    <import resource="classpath:spring/spring-data-source.xml"/>
+    <!--配置hibernate sessionFactory-->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!-- 系统Model绑定数据表注解 -->
+        <property name="packagesToScan" value="com.ants.project.fast.app.hibernate.model" />
+
+        <property name="hibernateProperties">
+            <props>
+                <!--数据库方言-->
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <!--是否显示sql-->
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <!--是否显示格式化sql-->
+                <prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+
+                <!-- 二级缓存是否关闭 推荐关闭 -->
+                <prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+                <!-- 是否开启查询缓存 -->
+                <prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+                <!-- 数据库批量查询最大数 -->
+                <prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+                <!-- 数据库批量更新、添加、删除操作最大数 -->
+                <prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+                <!-- 是否自动提交事务 -->
+                <prop key="hibernate.connection.autocommit">${hibernate.query.substitutions}</prop>
+
+                <prop key="javax.persistence.validation.mode">none</prop> <!--是做验证的-->
+                <!-- 自动生成数据表-->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.connection.release_mode">${hibernate.connection.release_mode}</prop>
+            </props>
+
+        </property>
+        <!--  通过通配符配置Model的映射xml文件 -->
+        <property name="mappingLocations">
+            <value>classpath:com/ants/project/fast/app/hibernate/model/**/*.hbm.xml</value>
+        </property>
+    </bean>
+
+    <!--hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到-->
+    <bean id="hibernate_transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <!-- 默认拦截器事务配置 -->
+    <bean id="hibernate_transactionInterceptor"
+          class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager" ref="hibernate_transactionManager" />
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
