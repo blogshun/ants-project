@@ -1,6 +1,12 @@
 ### JAVA 框架整合 Ants
-    Ants-Project 主要是包含核心库jar, 分布式服务jar, 网站后端框架war, 网站前端框架war, App接口框架war, 网站CMS框架war, App接口快速开发框架war
-自带有实例, 待逐渐完善...
+    Ants-Project 主要是包含核心库jar
+    , 分布式服务jar
+    , 网站后端框架war
+    , 网站前端框架war
+    , App接口框架war
+    , 网站CMS框架war
+    , App接口快速开发框架war
+    自带有实例, 待逐渐完善...
 
 ### 目录树
 ------------------------
